@@ -10,10 +10,15 @@ import {
 } from './Dtos';
 
 type PropsType = {
-  options: OptionsType
+  options: OptionsType,
+  lines_color?: string,
+  text_color?: string,
+  shadow_enable?: boolean,
+  shadow_color?: string,
+  hover_bar_color?: string
 }
 
-export const SMicroChart: React.FC <PropsType> = ({ options }) => {
+export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow_color, shadow_enable, text_color, hover_bar_color }) => {
 
   const react_id = useId();  
   const smicro_reference = useRef({} as FuncChart);
@@ -155,10 +160,16 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
         ctx.beginPath();
         ctx.fillStyle = load.color;
 
-        ctx.shadowColor = '#1111119e';
-        ctx.shadowBlur = 5;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
+        const enabled_shadow = typeof shadow_enable === 'undefined' ? true : shadow_enable ;
+
+        if (enabled_shadow) {
+
+          ctx.shadowColor = shadow_color || '#1111119e';
+          ctx.shadowBlur = 5;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+
+        }
 
         if (!Object.keys(load?.text || {}).length && Object.keys(load?.coords || {}).length) {
 
@@ -189,7 +200,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
       draw_base_chart() {
 
         this.draw_element({
-          color: '#ffffff2d',
+          color: lines_color || '#ffffff2d',
           coords: { h: 1.5, w: options.chart.width - this.min_width, x: this.min_width, y: this.line_base_height }
         })
 
@@ -205,7 +216,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
           const label_content = options?.labels?.length ? options.labels[i] : `${i + 1}`;
 
           this.draw_element({
-            color: '#ffffff',
+            color: lines_color || '#ffffff',
             coords: {
               h: 7,
               w: 1.5,
@@ -215,7 +226,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
           });
 
           this.draw_element({
-            color: '#ffffff',
+            color: text_color || '#ffffff',
             text: {
               content: label_content,
               px: this.size_text,
@@ -447,8 +458,8 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
                 const p2_c = points[i + 1][1];
                 const p2_2 = points[i + 1][2] || { x: options.chart.width, y: this.enable_height };
 
-                let [cp1_1x, cp1_1y, cp1_2x, cp1_2y] = get_control_points(p1_1.x, p1_1.y, p1_c.x, p1_c.y, p1_2.x, p1_2.y, tension);
-                let [cp2_1x, cp2_1y, cp2_2x, cp2_2y] = get_control_points(p2_1.x, p2_1.y, p2_c.x, p2_c.y, p2_2.x, p2_2.y, tension);
+                let [_, __, cp1_2x, cp1_2y] = get_control_points(p1_1.x, p1_1.y, p1_c.x, p1_c.y, p1_2.x, p1_2.y, tension);
+                let [cp2_1x, cp2_1y, ___, ____] = get_control_points(p2_1.x, p2_1.y, p2_c.x, p2_c.y, p2_2.x, p2_2.y, tension);
 
                 if (p1_c.y === p1_2.y && p1_c.y === this.enable_height) {
 
@@ -558,7 +569,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
           if (column.is_activate) {
 
             this.draw_element({
-              color: '#ffffff2d',
+              color: hover_bar_color || '#ffffff2d',
               coords: { h: column.pos.h, w: column.pos.w, x: column.pos.x, y: column.pos.y }
             });
 
@@ -597,7 +608,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
         this.min_width = (`${parseInt(get_max_value as any)}`.length * this.size_text) + (this.size_text / 2);
 
         this.draw_element({
-          color: '#ffffff2d',
+          color: lines_color || '#ffffff2d',
           coords: { w: 1.5, h: this.enable_height + this.margin_borders, x: this.min_width, y: 0 }
         });
 
@@ -627,12 +638,12 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
           );
 
           this.draw_element({
-            color: '#fff',
+            color: lines_color || '#fff',
             coords: { h: 1, w: 7, x: this.min_width - 7, y: position_y }
           });
 
           this.draw_element({
-            color: '#ffffff',
+            color: text_color || '#ffffff',
             text: {
               content: `${normalize_values(parseInt(vertical_data[i] as any))}`,
               px: this.size_text,
@@ -649,7 +660,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
             if (!dashed_enabled) {
 
               this.draw_element({
-                color: '#ffffff2d',
+                color: lines_color || '#ffffff2d',
                 coords: { h: 1, w: options.chart.width, x: this.min_width - 7, y: position_y }
               });
 
@@ -665,7 +676,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
             for (let z = 0; z < loops_count; z++) {
 
               this.draw_element({
-                color: '#ffffff2d',
+                color: lines_color || '#ffffff2d',
                 coords: { h: 1, w: w_dash, x: current_x_pos, y: position_y }
               });
 
@@ -962,7 +973,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options }) => {
 
     }
 
-  }, []);
+  }, [options, lines_color, shadow_color, shadow_enable, text_color, hover_bar_color]);
 
   return (
     <>

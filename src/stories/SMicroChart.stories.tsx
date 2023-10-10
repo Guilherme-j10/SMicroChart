@@ -5,7 +5,26 @@ import { BasicDataSet, OptionsType } from "../Dtos";
 const meta: Meta<typeof SMicroChart> = {
   title: 'SMicroChart',
   component: SMicroChart,
-  tags: ['autodocs']
+  tags: ['autodocs'],
+  argTypes: {
+    lines_color: {
+      description: 'change the chart line color'
+    },
+    options: {
+      description: 'Main object responsible for general configuration.'
+    },
+    shadow_color: {
+      description: 'Changes the color shadow of the elements.'
+    },
+    shadow_enable: {
+      description: 'Toggle shadow box on elements',
+      defaultValue: true,
+      type: 'boolean'
+    },
+    text_color: {
+      description: 'Change the text color'
+    }
+  }
 }
 
 export default meta;
@@ -84,6 +103,20 @@ const default_data: OptionsType = {
   }
 }
 
+export const CompleteUsage = {
+  args: {
+    lines_color: '',
+    text_color: '',
+    shadow_enable: false,
+    hover_bar_color: '',
+    shadow_color: '',
+    options: {
+      ...default_data,
+      smooth: false,
+    }
+  }
+}
+
 export const SmoothLineDisabled = {
   args: {
     options: {
@@ -107,7 +140,7 @@ export const ChartSimpleAndDotsDisables = {
   args: {
     options: {
       ...default_data,
-      disable_sparklines: true, 
+      disable_sparklines: true,
       enable_data_dots: false
     }
   }

@@ -1,8 +1,18 @@
 {
   "name": "smicrochart",
-  "private": true,
-  "version": "0.0.0",
+  "author": "Guilherme-j10",
+  "license": "MIT",
+  "version": "0.0.1",
   "type": "module",
+  "main": "./dist/react-smicrochart.umd.js",
+  "module": "./dist/react-smicrochart.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/react-smicrochart.es.js",
+      "require": "./dist/react-smicrochart.umd.js"
+    }
+  },
+  "source": "src/index.tsx",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -11,9 +21,17 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guilherme-j10/SMicroChart.git"
+  },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "string-width": "^6.1.0"
+  },
+  "resolutions": {
+    "jackspeak": "2.1.1"
   },
   "devDependencies": {
     "@storybook/addon-essentials": "^7.4.6",
@@ -34,6 +52,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "eslint-plugin-storybook": "^0.6.15",
     "storybook": "^7.4.6",
+    "storybook-dark-mode": "^3.0.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
