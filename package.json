@@ -2,10 +2,11 @@
   "name": "smicrochart",
   "author": "Guilherme-j10",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "type": "module",
-  "main": "./dist/react-smicrochart.umd.js",
-  "module": "./dist/react-smicrochart.es.js",
+  "main": "dist/react-smicrochart.umd.js",
+  "module": "dist/react-smicrochart.es.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/react-smicrochart.es.js",
@@ -28,7 +29,8 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "string-width": "^6.1.0"
+    "string-width": "^6.1.0",
+    "vite-plugin-dts": "^3.6.0"
   },
   "resolutions": {
     "jackspeak": "2.1.1"
