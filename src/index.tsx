@@ -991,6 +991,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
       if (enable_parent_container_dimension && canvas.parentElement) {
 
+        console.log('testing...')
         resize_everything();
         window.addEventListener('resize', resize_everything);
 
