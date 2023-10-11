@@ -1,26 +1,35 @@
 import React, { useEffect, useId, useRef } from 'react';
-import { 
+import {
   ArcsData,
   ChartColumnPos,
   DrawArcType,
   DrawElementTypes,
   FuncChart,
   OptionsType,
-  ValidationChartStructure 
+  ValidationChartStructure
 } from './Dtos';
 
 type PropsType = {
   options: OptionsType,
   lines_color?: string,
   text_color?: string,
+  enable_parent_container_dimension?: boolean,
   shadow_enable?: boolean,
   shadow_color?: string,
   hover_bar_color?: string
 }
 
-export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow_color, shadow_enable, text_color, hover_bar_color }) => {
+export const SMicroChart: React.FC<PropsType> = ({
+  options,
+  lines_color,
+  shadow_color,
+  shadow_enable,
+  text_color,
+  hover_bar_color,
+  enable_parent_container_dimension
+}) => {
 
-  const react_id = useId();  
+  const react_id = useId();
   const smicro_reference = useRef({} as FuncChart);
 
   const smicrochart_initializer = (): FuncChart => {
@@ -160,7 +169,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow
         ctx.beginPath();
         ctx.fillStyle = load.color;
 
-        const enabled_shadow = typeof shadow_enable === 'undefined' ? true : shadow_enable ;
+        const enabled_shadow = typeof shadow_enable === 'undefined' ? true : shadow_enable;
 
         if (enabled_shadow) {
 
@@ -899,6 +908,35 @@ export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow
 
     }
 
+    const resize_everything = () => {
+
+      const w = parseInt(window.getComputedStyle(canvas.parentElement as Element).width);
+      const h = parseInt(window.getComputedStyle(canvas.parentElement as Element).height);
+
+      const c_1 = canvas.parentElement?.style.height.includes('%');
+      const c_2 = canvas.parentElement?.parentElement?.style.height !== '';
+      const c_3 = !canvas.parentElement?.style.height.includes('%') && canvas.parentElement?.style.height !== '';
+
+      const difference = Math.abs(canvas.height - h);
+
+      const final_result_from_condition = ((c_1 && c_2) || c_3) ? h : h - difference;
+
+      options = {
+        ...options,
+        chart: {
+          ...options.chart,
+          width: w,
+          height: final_result_from_condition
+        }
+      };
+
+      canvas.width = w;
+      canvas.height = final_result_from_condition;
+
+      draw_everything();
+
+    }
+
     const disable_all_columns = () => {
 
       for (const column of chart.chart_column_pos)
@@ -940,6 +978,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow
     }
 
     const data_is_ok = check_data_integrity();
+    let observer = {} as MutationObserver;
 
     if (!data_is_ok._success) console.error(data_is_ok.message);
 
@@ -950,9 +989,42 @@ export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow
       canvas.addEventListener('mousemove', on_mouse_move);
       canvas.addEventListener('mouseout', disable_all_columns);
 
+      if (enable_parent_container_dimension && canvas.parentElement) {
+
+        resize_everything();
+        window.addEventListener('resize', resize_everything);
+
+        observer = new MutationObserver((mutationList) => {
+
+          for (const mutation of mutationList) {
+
+            if (mutation.attributeName === 'style')
+              resize_everything();
+
+          }
+
+        });
+
+        observer.observe(canvas.parentElement as Node, {
+          attributes: true,
+          attributeFilter: ['style']
+        })
+
+      }
+
+      if (!canvas.parentElement)
+        console.error('[enable_parent_container_dimension] equals true need of a parent element.')
+
     }
 
     const destroy_canvas_listeners = () => {
+
+      if (enable_parent_container_dimension) {
+
+        observer.disconnect();
+        window.removeEventListener('resize', resize_everything);
+
+      }
 
       canvas.removeEventListener('mousemove', on_mouse_move);
       canvas.removeEventListener('mouseout', disable_all_columns);
@@ -977,7 +1049,7 @@ export const SMicroChart: React.FC <PropsType> = ({ options, lines_color, shadow
 
   return (
     <>
-      <canvas id={react_id} ></canvas>
+      <canvas id={react_id}></canvas>
     </>
   );
 }
