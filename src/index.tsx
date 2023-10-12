@@ -148,9 +148,10 @@ export const SMicroChart: React.FC<PropsType> = ({
     }
 
     const default_stroke_width = (options?.stroke_line_settings?.width || 3);
+    const base_margin = 25;
 
     const chart = {
-      line_base_height: options.chart.height - 25,
+      line_base_height: options.chart.height - base_margin,
       size_text: 11,
       size_text_tip: 13,
       padding_top: 22,
@@ -294,11 +295,22 @@ export const SMicroChart: React.FC<PropsType> = ({
           const initial_point_more_padding = initial_point + (padding_space / 2);
           let start_point = initial_point_more_padding;
 
-          this.chart_column_pos.push({
-            index: x,
-            is_activate: false,
-            pos: { x: initial_point, y: 0, h: this.enable_height, w: calc_spikes_pos }
-          });
+          if (this.chart_column_pos.length >= options.series[0].data.length) {
+
+            this.chart_column_pos = this.chart_column_pos.map(data => data.index === x ? ({
+              ...data,
+              pos: { x: initial_point, y: 0, h: this.enable_height, w: calc_spikes_pos }
+            }) : data)
+
+          } else {
+
+            this.chart_column_pos.push({
+              index: x,
+              is_activate: false,
+              pos: { x: initial_point, y: 0, h: this.enable_height, w: calc_spikes_pos }
+            });
+
+          }
 
           for (let z = 0; z < get_columns.length; z++) {
 
@@ -732,7 +744,7 @@ export const SMicroChart: React.FC<PropsType> = ({
               color: 'rgb(255,255,255)',
               text: {
                 aling: 'left',
-                content: `${options.label_tip}${this.current_labels[column.index]}`,
+                content: `${options.label_tip || ''}${this.current_labels[column.index]}`,
                 px: this.size_text_tip,
                 coords: { x: pos_x_base + padding, y: pos_y_base + 18 }
               }
@@ -777,6 +789,12 @@ export const SMicroChart: React.FC<PropsType> = ({
         const w = options.chart.width;
         const h = options.chart.height;
         this.min_side_by_side = w < h ? w : h;
+
+      },
+      update_chart_properties () {
+
+        this.line_base_height = options.chart.height - base_margin;
+        this.enable_height = (options?.disable_sparklines || false) ? options.chart.height - default_stroke_width : 0;
 
       },
       draw_arc(props: DrawArcType) {
@@ -875,6 +893,7 @@ export const SMicroChart: React.FC<PropsType> = ({
       ctx.clearRect(0, 0, options.chart.width, options.chart.height);
 
       chart.define_min_side();
+      chart.update_chart_properties();
 
       if (options.chart.type === 'pie_lines') {
 
@@ -991,7 +1010,6 @@ export const SMicroChart: React.FC<PropsType> = ({
 
       if (enable_parent_container_dimension && canvas.parentElement) {
 
-        console.log('testing...')
         resize_everything();
         window.addEventListener('resize', resize_everything);
 
