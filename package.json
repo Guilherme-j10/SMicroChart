@@ -2,7 +2,7 @@
   "name": "smicrochart",
   "author": "Guilherme-j10",
   "license": "MIT",
-  "version": "1.1.2",
+  "version": "1.1.6",
   "type": "module",
   "main": "dist/react-smicrochart.umd.js",
   "module": "dist/react-smicrochart.es.js",
@@ -10,7 +10,8 @@
   "exports": {
     ".": {
       "import": "./dist/react-smicrochart.es.js",
-      "require": "./dist/react-smicrochart.umd.js"
+      "require": "./dist/react-smicrochart.umd.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "source": "src/index.tsx",
