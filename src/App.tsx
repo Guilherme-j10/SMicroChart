@@ -28,10 +28,39 @@ function App() {
   }, [enable]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#111', flexDirection: 'column', alignItems: 'center', height: '120vh' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#111', flexDirection: 'column', alignItems: 'center', height: '200vh' }}>
       <button onClick={() => set_enable(val => !val)} style={{ background: '#333', marginBottom: 20, color: 'white' }}>
         toggle
       </button>
+      <div style={{ width: '400px', height: '100px', border: 'solid 1px red' }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
+          disable_border_points={true}
+          options={{
+            disable_sparklines: true,
+            hermit_enable: true,  
+            enable_data_dots: false,
+            smooth: true,
+            stroke_line_settings: {
+              fill: false,
+              width: 2,
+            },
+            series: [
+              {
+                color: '#ffffff',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
       <div style={{ width: '400px', height: '100px', border: 'solid 1px red' }} ref={element}>
         <SMicroChart
           enable_parent_container_dimension={true}

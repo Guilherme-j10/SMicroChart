@@ -15,6 +15,7 @@ type PropsType = {
   text_color?: string,
   enable_parent_container_dimension?: boolean,
   shadow_enable?: boolean,
+  disable_border_points?: boolean,
   shadow_color?: string,
   hover_bar_color?: string
 }
@@ -26,6 +27,7 @@ export const SMicroChart: React.FC<PropsType> = ({
   shadow_enable,
   text_color,
   hover_bar_color,
+  disable_border_points,
   enable_parent_container_dimension
 }) => {
 
@@ -82,6 +84,15 @@ export const SMicroChart: React.FC<PropsType> = ({
           }
 
         }
+
+      }
+
+      if (disable_border_points && (!options.hermit_enable || options?.stroke_line_settings?.fill || !options?.disable_sparklines)) {
+
+        return {
+          _success: false,
+          message: 'disable_border_points is only compatible with active hermit, disable_sparklines true and fill being false.'
+        };
 
       }
 
@@ -396,6 +407,9 @@ export const SMicroChart: React.FC<PropsType> = ({
           if (spark_enabled)
             ctx.moveTo(0, this.enable_height);
 
+          if (disable_border_points)
+            ctx.moveTo(first_p.x, first_p.y);
+
           if (options?.smooth) {
 
             if (!spark_enabled) {
@@ -415,7 +429,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
               }
 
-              if (!options?.stroke_line_settings?.fill) {
+              if (!options?.stroke_line_settings?.fill && !disable_border_points) {
 
                 coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
                 coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
@@ -423,8 +437,8 @@ export const SMicroChart: React.FC<PropsType> = ({
               }
 
               if (!is_spline_cubic) {
-                
-                if (!options?.stroke_line_settings?.fill)
+
+                if (!options?.stroke_line_settings?.fill && !disable_border_points)
                   coords_of_line.push({ x: options.chart.width, y: this.enable_height });
 
                 if (options?.stroke_line_settings?.fill)
@@ -596,7 +610,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
           }
 
-          if (spark_enabled)
+          if (spark_enabled && !disable_border_points)
             ctx.lineTo(options.chart.width, this.enable_height);
 
           ctx.stroke();
@@ -1119,7 +1133,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
     }
 
-  }, [options, lines_color, shadow_color, shadow_enable, text_color, hover_bar_color]);
+  }, [options, lines_color, shadow_color, shadow_enable, text_color, hover_bar_color, disable_border_points]);
 
   return (
     <>
