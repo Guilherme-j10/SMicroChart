@@ -133,7 +133,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
           const removed_prefix = color.split('#')[1];
 
-          if (removed_prefix.length === 6) continue;
+          if (removed_prefix.length >= 6) continue;
 
           validation._success = false;
           validation.message = 'The colors provided need be a hex code of 6 char.'
@@ -279,7 +279,7 @@ export const SMicroChart: React.FC<PropsType> = ({
       },
       draw_columns() {
 
-        const vertical_boarder = options?.hide_vertical_data_set ? 0 : this.margin_borders;
+        const vertical_boarder = options?.hide_vertical_data_set ? 0 : options.disable_sparklines ? 0 : this.margin_borders;
         const enable_stroke_bars = options?.stroke_line_settings?.opacity_bar_enabled;
         const get_columns = options.series.filter(data => data.data_type === 'column');
         const calc_spikes_pos = (options.chart.width - (this.min_width + vertical_boarder)) / options.series[0].data.length;
@@ -314,7 +314,8 @@ export const SMicroChart: React.FC<PropsType> = ({
 
           for (let z = 0; z < get_columns.length; z++) {
 
-            const chart_height_column = interpolation(options.series[z].data[x], [0, max_height], [2, this.enable_height - (padding_space / 2)]);
+            const current_column = get_columns[z];
+            const chart_height_column = interpolation(current_column.data[x], [0, max_height], [2, this.enable_height - (padding_space / 2)]);
 
             if (enable_stroke_bars) {
 
@@ -325,9 +326,9 @@ export const SMicroChart: React.FC<PropsType> = ({
 
               ctx.beginPath();
 
-              const rgb = this.get_rgb_color(options.series[z].color);
+              const rgb = this.get_rgb_color(current_column.color);
               ctx.fillStyle = `rgb(${rgb?.r}, ${rgb?.g}, ${rgb?.b}, .2)`;
-              ctx.strokeStyle = options.series[z].color;
+              ctx.strokeStyle = current_column.color;
               ctx.lineWidth = this.default_stroke_style.width;
 
               ctx.moveTo(x, y);
@@ -346,7 +347,7 @@ export const SMicroChart: React.FC<PropsType> = ({
             if (!enable_stroke_bars) {
 
               this.draw_element({
-                color: options.series[z].color,
+                color: current_column.color,
                 coords: {
                   h: chart_height_column,
                   w: space_by_each_column,
@@ -365,6 +366,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
         for (let i = 0; i < get_lines.length; i++) {
 
+          const spark_enabled = (options?.disable_sparklines || false);
           let coords_of_line = [];
 
           for (let y = 0; y < get_lines[i].data.length; y++) {
@@ -383,15 +385,57 @@ export const SMicroChart: React.FC<PropsType> = ({
           ctx.lineWidth = this.default_stroke_style.width;
 
           const is_spline_cubic = !options?.hermit_enable ? true : false;
+          const first_p = coords_of_line[0];
+          const last_p = coords_of_line[coords_of_line.length - 1];
 
           ctx.beginPath();
-          ctx.moveTo((this.min_width + vertical_boarder), this.enable_height);
+
+          if (!spark_enabled)
+            ctx.moveTo((this.min_width + vertical_boarder), this.enable_height);
+
+          if (spark_enabled)
+            ctx.moveTo(0, this.enable_height);
 
           if (options?.smooth) {
 
-            coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
-            coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
-            coords_of_line.push({ x: options.chart.width, y: this.enable_height });
+            if (!spark_enabled) {
+
+              coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
+              coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
+              coords_of_line.push({ x: options.chart.width, y: this.enable_height });
+
+            }
+
+            if (spark_enabled) {
+
+              if (options?.stroke_line_settings?.fill) {
+
+                coords_of_line.unshift({ x: 0, y: first_p.y });
+                coords_of_line.unshift({ x: 0, y: first_p.y });
+
+              }
+
+              if (!options?.stroke_line_settings?.fill) {
+
+                coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
+                coords_of_line.unshift({ x: (this.min_width + vertical_boarder), y: this.enable_height });
+
+              }
+
+              if (!is_spline_cubic) {
+                
+                if (!options?.stroke_line_settings?.fill)
+                  coords_of_line.push({ x: options.chart.width, y: this.enable_height });
+
+                if (options?.stroke_line_settings?.fill)
+                  coords_of_line.push({ x: options.chart.width, y: last_p.y });
+
+              }
+
+              if (is_spline_cubic)
+                coords_of_line.push({ x: options.chart.width + 3, y: this.enable_height });
+
+            }
 
             const hermit_interpolation = (x: number, x1: number, y1: number, x2: number, y2: number): number => {
 
@@ -534,15 +578,26 @@ export const SMicroChart: React.FC<PropsType> = ({
 
           if (!options?.smooth) {
 
+            if (spark_enabled && options?.stroke_line_settings?.fill) {
+
+              coords_of_line.unshift({ x: 0, y: first_p.y });
+              coords_of_line.push({ x: options.chart.width, y: last_p.y });
+
+            }
+
             for (const coord of coords_of_line) {
 
               ctx.lineTo(coord.x, coord.y);
 
             }
 
-            ctx.lineTo(options.chart.width, this.enable_height);
+            if (!spark_enabled)
+              ctx.lineTo(options.chart.width, this.enable_height);
 
           }
+
+          if (spark_enabled)
+            ctx.lineTo(options.chart.width, this.enable_height);
 
           ctx.stroke();
 
@@ -791,7 +846,7 @@ export const SMicroChart: React.FC<PropsType> = ({
         this.min_side_by_side = w < h ? w : h;
 
       },
-      update_chart_properties () {
+      update_chart_properties() {
 
         this.line_base_height = options.chart.height - base_margin;
         this.enable_height = (options?.disable_sparklines || false) ? options.chart.height - default_stroke_width : 0;

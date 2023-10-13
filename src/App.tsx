@@ -28,37 +28,175 @@ function App() {
   }, [enable]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#111', flexDirection: 'column', alignItems: 'center', height: '90vh' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#111', flexDirection: 'column', alignItems: 'center', height: '120vh' }}>
       <button onClick={() => set_enable(val => !val)} style={{ background: '#333', marginBottom: 20, color: 'white' }}>
         toggle
       </button>
-      <div style={{ width: '20%', height: '300px', border: 'solid 1px red' }} ref={element}>
+      <div style={{ width: '400px', height: '100px', border: 'solid 1px red' }} ref={element}>
         <SMicroChart
+          enable_parent_container_dimension={true}
+          options={{
+            disable_sparklines: true,
+            hermit_enable: true,
+            enable_data_dots: false,
+            smooth: true,
+            stroke_line_settings: {
+              fill: true,
+              width: 1,
+              fill_color: '#ffffff5b'
+            },
+            series: [
+              {
+                color: '#ffffff5b',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
+      <div style={{ width: '400px', height: '100px', border: 'solid 1px red' }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
+          options={{
+            disable_sparklines: true,
+            hermit_enable: false,
+            enable_data_dots: false,
+            smooth: true,
+            stroke_line_settings: {
+              fill: true,
+              width: 1,
+              fill_color: '#ffffff5b'
+            },
+            series: [
+              {
+                color: '#ffffff5b',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
+      <div style={{ width: '400px', height: '100px', border: 'solid 1px red' }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
+          options={{
+            disable_sparklines: true,
+            hermit_enable: false,
+            enable_data_dots: false,
+            smooth: false,
+            stroke_line_settings: {
+              fill: true,
+              width: 1,
+              fill_color: '#ffffff5b'
+            },
+            series: [
+              {
+                color: '#ffffff5b',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
+      <div style={{ width: '700px', height: '300px', border: 'solid 1px red', marginTop: 10 }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
           options={{
             series: [
               {
-                color: '#333333',
-                data: [25, 0, 0, 0, 0],
-                data_label: 'opt_1',
-                data_type: 'column'
+                color: '#3defcc',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
               },
               {
-                color: '#90ff68',
-                data: [35, 0, 0, 0, 0],
-                data_label: 'opt_1',
-                data_type: 'column'
-              },
-              {
-                color: '#5cf8c7',
-                data: [45, 0, 0, 0, 0],
-                data_label: 'opt_1',
+                color: '#acec19',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
                 data_type: 'column'
               }
             ],
             chart: {
-              height: 300,
-              width: 300,
-              type: 'normal'
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
+      <div style={{ width: '700px', height: '300px', border: 'solid 1px red', marginTop: 10 }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
+          options={{
+            smooth: true,
+            series: [
+              {
+                color: '#3defcc',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              },
+              {
+                color: '#acec19',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'column'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
+            }
+          }}
+        />
+      </div>
+      <div style={{ width: '700px', height: '300px', border: 'solid 1px transparent', marginTop: 10 }} ref={element}>
+        <SMicroChart
+          enable_parent_container_dimension={true}
+          options={{
+            disable_sparklines: true,
+            hermit_enable: true,
+            smooth: true,
+            series: [
+              {
+                color: '#3defcc',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'line'
+              },
+              {
+                color: '#acec19',
+                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data_label: 'teste',
+                data_type: 'column'
+              }
+            ],
+            chart: {
+              type: 'normal',
+              width: 200,
+              height: 100
             }
           }}
         />
