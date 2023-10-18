@@ -1,6 +1,7 @@
 export type BasicDataSet = {
   data_label: string,
   color: string,
+  min_height?: number,
   data_type?: string,
   data: number[]
 }

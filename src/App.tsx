@@ -41,14 +41,14 @@ function App() {
             hermit_enable: true,  
             enable_data_dots: false,
             smooth: true,
-            stroke_line_settings: {
-              fill: false,
-              width: 2,
-            },
+            // stroke_line_settings: {
+            //   fill: false,
+            //   width: 10,
+            // },
             series: [
               {
                 color: '#ffffff',
-                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data: [0,0,0,0,0,0,0],
                 data_label: 'teste',
                 data_type: 'line'
               }

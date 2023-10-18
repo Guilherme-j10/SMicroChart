@@ -338,7 +338,7 @@ export const SMicroChart: React.FC<PropsType> = ({
 
             const current_column = get_columns[z];
             const is_null = this.is_dataset_null(current_column.data);
-            const chart_height_column = interpolation(current_column.data[x], [0, is_null ? 1 : max_height], [2, this.enable_height - (padding_space / 2)]);
+            const chart_height_column = interpolation(current_column.data[x], [0, is_null ? current_column?.min_height || 1 : max_height], [2, this.enable_height - (padding_space / 2)]);
 
             if (enable_stroke_bars) {
 
@@ -394,7 +394,8 @@ export const SMicroChart: React.FC<PropsType> = ({
 
           for (let y = 0; y < get_lines[i].data.length; y++) {
 
-            const chart_height_column = interpolation(get_lines[i].data[y], [0, max_height], [0, this.enable_height - 5]);
+            const is_null = this.is_dataset_null(get_lines[i].data);
+            const chart_height_column = interpolation(get_lines[i].data[y], [0, is_null ? get_lines[i]?.min_height || 1 : max_height], [0, this.enable_height - 5]);
             const calc_y = Math.abs(chart_height_column - this.enable_height);
 
             const pinter_x = calc_spikes_pos * y;
