@@ -211,16 +211,16 @@ function App() {
             series: [
               {
                 color: '#3defcc',
-                data: [160, 85, 100, 56, 150, 110, 89, 130],
+                data: [0,0,0,0,0,0,0],
                 data_label: 'teste',
                 data_type: 'line'
               },
-              {
-                color: '#acec19',
-                data: [160, 85, 100, 56, 150, 110, 89, 130],
-                data_label: 'teste',
-                data_type: 'column'
-              }
+              // {
+              //   color: '#acec19',
+              //   data: [0,0,0,0,0,0,0],
+              //   data_label: 'teste',
+              //   data_type: 'column'
+              // }
             ],
             chart: {
               type: 'normal',
